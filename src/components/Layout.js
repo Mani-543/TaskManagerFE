@@ -1,0 +1,16 @@
+import React from "react";
+
+function Layout({ children }) {
+  return (
+    <div className="min-h-screen bg-gray-200">
+
+      {/* PAGE CONTAINER */}
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 md:py-6">
+        {children}
+      </div>
+
+    </div>
+  );
+}
+
+export default Layout;
