@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 function Register() {
@@ -10,6 +11,8 @@ function Register() {
 
   const [loading, setLoading] = useState(false);
 
+  const navigate = useNavigate(); // ✅ correct place
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -20,12 +23,13 @@ function Register() {
 
     try {
       await axios.post(
-        "http://localhost:5000/api/auth/register",
+        "http://localhost:5000/api/auth/register", // ✅ FIXED URL
         form
       );
 
       alert("Registered Successfully ✅");
-      window.location.href = "/login";
+      navigate("/login"); // ✅ correct navigation
+
     } catch (error) {
       console.log(error.message);
 
@@ -116,7 +120,7 @@ function Register() {
           Already have an account?{" "}
           <span
             className="text-blue-600 cursor-pointer hover:underline"
-            onClick={() => (window.location.href = "/login")}
+            onClick={() => navigate("/login")} // ✅ FIXED
           >
             Login
           </span>
