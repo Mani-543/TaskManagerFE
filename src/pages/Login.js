@@ -1,5 +1,5 @@
 import React from "react";
-import axios from "axios";
+import API from "../services/api";
 import { useNavigate, Link } from "react-router-dom";
 
 function Login() {
@@ -14,18 +14,29 @@ function Login() {
     setError(null);
 
     try {
-      const res = await axios.post(
-        "http://localhost:5000/api/auth/login",
-        form
-      );
+      // 🔥 DEBUG: check what is being sent
+      console.log("LOGIN DATA SENT:", form);
+
+      const res = await API.post("/auth/login", {
+        email: form.email.trim(),
+        password: form.password
+      });
+
+      console.log("LOGIN RESPONSE:", res.data);
 
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("userId", res.data.user._id);
       localStorage.setItem("name", res.data.user.name);
 
       navigate("/dashboard");
+
     } catch (err) {
-      setError("Invalid email or password");
+      console.log("LOGIN ERROR:", err.response?.data);
+
+      setError(
+        err.response?.data?.message ||
+        "Login failed. Please check email/password"
+      );
     } finally {
       setLoading(false);
     }
@@ -34,10 +45,8 @@ function Login() {
   return (
     <div className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-r from-purple-400 via-pink-500 to-red-500">
 
-      {/* CARD */}
       <div className="bg-white p-6 md:p-8 rounded-xl shadow-xl w-full max-w-md">
 
-        {/* TITLE */}
         <h2 className="text-2xl md:text-3xl font-bold text-center text-gray-800 mb-2">
           Welcome Back 👋
         </h2>
@@ -46,17 +55,14 @@ function Login() {
           Login to manage your tasks
         </p>
 
-        {/* ERROR */}
         {error && (
           <div className="mb-4 text-red-500 text-center text-sm">
             {error}
           </div>
         )}
 
-        {/* FORM */}
         <form onSubmit={handleLogin} className="space-y-5">
 
-          {/* EMAIL */}
           <div>
             <label className="block mb-1 text-sm text-gray-600">
               Email
@@ -73,7 +79,6 @@ function Login() {
             />
           </div>
 
-          {/* PASSWORD */}
           <div>
             <label className="block mb-1 text-sm text-gray-600">
               Password
@@ -90,7 +95,6 @@ function Login() {
             />
           </div>
 
-          {/* BUTTON */}
           <button
             type="submit"
             disabled={loading}
@@ -104,13 +108,9 @@ function Login() {
           </button>
         </form>
 
-        {/* REGISTER LINK */}
         <p className="text-center text-sm text-gray-500 mt-6">
           Don’t have an account?{" "}
-          <Link
-            to="/register"
-            className="text-blue-600 hover:underline"
-          >
+          <Link to="/register" className="text-blue-600 hover:underline">
             Register
           </Link>
         </p>

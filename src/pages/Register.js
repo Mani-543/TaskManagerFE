@@ -1,6 +1,7 @@
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import API from "../services/api";
 
 function Register() {
   const [form, setForm] = useState({
@@ -10,8 +11,7 @@ function Register() {
   });
 
   const [loading, setLoading] = useState(false);
-
-  const navigate = useNavigate(); // ✅ correct place
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -22,13 +22,10 @@ function Register() {
     setLoading(true);
 
     try {
-      await axios.post(
-        "http://localhost:5000/api/auth/register", // ✅ FIXED URL
-        form
-      );
+      await API.post("/auth/register", form);
 
       alert("Registered Successfully ✅");
-      navigate("/login"); // ✅ correct navigation
+      navigate("/login");
 
     } catch (error) {
       console.log(error.message);
