@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import axios from "axios";
-import API from "../services/api";
 
 function Register() {
   const [form, setForm] = useState({
@@ -20,8 +19,11 @@ function Register() {
     setLoading(true);
 
     try {
-      await API.post("/auth/register", form);
-      
+      await axios.post(
+        "http://localhost:5000/api/auth/register",
+        form
+      );
+
       alert("Registered Successfully ✅");
       window.location.href = "/login";
     } catch (error) {

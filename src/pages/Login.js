@@ -1,7 +1,6 @@
 import React from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
-import API from "../services/api";
 
 function Login() {
   const [form, setForm] = React.useState({ email: "", password: "" });
@@ -10,24 +9,27 @@ function Login() {
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
-  e.preventDefault();
-  setLoading(true);
-  setError(null);
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
 
-  try {
-    const res = await API.post("/auth/login", form);
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/api/auth/login",
+        form
+      );
 
-    localStorage.setItem("token", res.data.token);
-    localStorage.setItem("userId", res.data.user._id);
-    localStorage.setItem("name", res.data.user.name);
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("userId", res.data.user._id);
+      localStorage.setItem("name", res.data.user.name);
 
-    navigate("/dashboard");
-  } catch (err) {
-    setError("Invalid email or password");
-  } finally {
-    setLoading(false);
-  }
-};
+      navigate("/dashboard");
+    } catch (err) {
+      setError("Invalid email or password");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-r from-purple-400 via-pink-500 to-red-500">
