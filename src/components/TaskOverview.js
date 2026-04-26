@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import API from "../services/api";
 
-function TaskOverview({ setCategoryFilter }) {
+function TaskOverview({ setCategoryFilter, refreshKey }) {
   const [data, setData] = useState(null);
 
   // ---------------- FETCH OVERVIEW ----------------
@@ -10,14 +10,11 @@ function TaskOverview({ setCategoryFilter }) {
 
     const fetchOverview = async () => {
       try {
-        const res = await axios.get(
-          "http://localhost:5000/api/tasks/overview",
-          {
-            headers: {
-              Authorization: token,
-            },
-          }
-        );
+        const res = await API.get("/tasks/overview", {
+          headers: {
+            Authorization: token,
+          },
+        });
 
         setData(res.data);
       } catch (err) {
@@ -26,7 +23,7 @@ function TaskOverview({ setCategoryFilter }) {
     };
 
     fetchOverview();
-  }, []);
+  }, [refreshKey]);
 
   if (!data) {
     return (

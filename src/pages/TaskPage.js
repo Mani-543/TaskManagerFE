@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import axios from "axios";
+import API from "../services/api"; // ✅ FIX
 import { useParams, useNavigate } from "react-router-dom";
 import TaskDetails from "../components/TaskDetails";
 import Comments from "../components/Comments";
@@ -13,7 +13,6 @@ function TaskPage() {
 
   const userId = localStorage.getItem("userId");
 
-  // ✅ PERMISSIONS
   const isCreator = task?.createdBy?._id === userId;
 
   const sharedUser = task?.sharedWith?.find(
@@ -24,7 +23,6 @@ function TaskPage() {
     isCreator ||
     (sharedUser && sharedUser.permission === "edit");
 
-  // SHARE STATES
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState("");
   const [permission, setPermission] = useState("view");
@@ -36,17 +34,10 @@ function TaskPage() {
     status: "",
   });
 
-  // ================= FETCH TASK =================
+  // ✅ FETCH TASK
   const fetchTask = useCallback(async () => {
     try {
-      const res = await axios.get(
-        "http://localhost:5000/api/tasks",
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const res = await API.get("/tasks"); // ✅ FIX
       const found = res.data.find((t) => t._id === id);
       setTask(found);
     } catch (err) {
@@ -58,15 +49,11 @@ function TaskPage() {
     fetchTask();
   }, [fetchTask]);
 
-  // ================= FETCH USERS =================
+  // ✅ FETCH USERS
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/users", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
+        const res = await API.get("/users"); // ✅ FIX
         setUsers(res.data);
       } catch (err) {
         console.log(err.message);
@@ -75,35 +62,10 @@ function TaskPage() {
     fetchUsers();
   }, []);
 
-  // ================= EDIT =================
-  const openEdit = () => {
-    setEditForm({
-      title: task.title,
-      description: task.description,
-      priority: task.priority,
-      status: task.status,
-    });
-    setIsEditing(true);
-  };
-
-  const handleChange = (e) => {
-    setEditForm({
-      ...editForm,
-      [e.target.name]: e.target.value,
-    });
-  };
-
+  // ✅ SAVE EDIT
   const saveEdit = async () => {
     try {
-      await axios.put(
-        `http://localhost:5000/api/tasks/${id}`,
-        editForm,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      await API.put(`/tasks/${id}`, editForm); // ✅ FIX
       alert("Task updated ✅");
       setIsEditing(false);
       fetchTask();
@@ -112,39 +74,23 @@ function TaskPage() {
     }
   };
 
-  // ================= COMPLETE =================
+  // ✅ COMPLETE
   const markAsCompleted = async () => {
     try {
-      await axios.put(
-        `http://localhost:5000/api/tasks/${id}`,
-        { status: "Completed" },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      alert("Task completed ✅");
+      await API.put(`/tasks/${id}`, { status: "Completed" }); // ✅ FIX
       fetchTask();
     } catch (err) {
       console.log(err.message);
     }
   };
 
-  // ================= SHARE =================
+  // ✅ SHARE
   const shareTask = async () => {
     try {
-      if (!selectedUser) return alert("Select user");
-
-      await axios.post(
-        `http://localhost:5000/api/tasks/${id}/share`,
-        { userId: selectedUser, permission },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      await API.post(`/tasks/${id}/share`, {
+        userId: selectedUser,
+        permission,
+      }); // ✅ FIX
 
       alert("Task Shared ✅");
     } catch (err) {
@@ -152,31 +98,36 @@ function TaskPage() {
     }
   };
 
-  // ================= DELETE =================
+  // ✅ DELETE
   const deleteTask = async () => {
     try {
-      await axios.delete(
-        `http://localhost:5000/api/tasks/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      alert("Task deleted 🗑️");
+      await API.delete(`/tasks/${id}`); // ✅ FIX
       navigate("/dashboard");
     } catch (err) {
       console.log(err.message);
     }
   };
 
-  if (!task)
-    return (
-      <div className="flex justify-center p-4">
-        <p>Loading...</p>
-      </div>
-    );
 
+  // ================= OPEN EDIT =================
+const openEdit = () => {
+  setEditForm({
+    title: task.title,
+    description: task.description,
+    priority: task.priority,
+    status: task.status,
+  });
+  setIsEditing(true);
+};
+
+// ================= HANDLE CHANGE =================
+const handleChange = (e) => {
+  setEditForm({
+    ...editForm,
+    [e.target.name]: e.target.value,
+  });
+};
+  if (!task) return <p>Loading...</p>;
   return (
     <div className="max-w-5xl mx-auto px-4 md:px-6 py-6 md:py-10 bg-gradient-to-r from-purple-300 via-pink-500 to-yellow-300 rounded-lg">
 
@@ -186,7 +137,6 @@ function TaskPage() {
           📋 {task.title}
         </h1>
 
-        {/* ACTIONS */}
         <div className="flex flex-wrap gap-2">
 
           {canEdit && (
@@ -221,19 +171,13 @@ function TaskPage() {
       {/* DETAILS + EDIT */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
 
-        {/* DETAILS */}
         <div className="bg-yellow-100 p-4 sm:p-5 rounded-lg w-full">
           <h2 className="font-semibold mb-3 text-base sm:text-lg">
             Details
           </h2>
 
           <div className="space-y-2 text-sm sm:text-base">
-            <p className="break-words">
-              <b>Description:</b>{" "}
-              <span className="block sm:inline">
-                {task.description}
-              </span>
-            </p>
+            <p><b>Description:</b> {task.description}</p>
 
             <p>
               <b>Deadline:</b>{" "}
@@ -242,19 +186,11 @@ function TaskPage() {
                 : "No deadline"}
             </p>
 
-            <p>
-              <b>Priority:</b>{" "}
-              <span className="capitalize">{task.priority}</span>
-            </p>
-
-            <p>
-              <b>Status:</b>{" "}
-              <span className="capitalize">{task.status}</span>
-            </p>
+            <p><b>Priority:</b> {task.priority}</p>
+            <p><b>Status:</b> {task.status}</p>
           </div>
         </div>
 
-        {/* EDIT */}
         {isEditing && canEdit && (
           <div className="bg-pink-100 p-4 rounded-lg space-y-3">
             <input name="title" value={editForm.title} onChange={handleChange} className="w-full p-2 rounded border" />
@@ -282,9 +218,8 @@ function TaskPage() {
         )}
       </div>
 
-      {/* COMMENTS + FILE */}
       <div className="space-y-6">
-        <TaskDetails taskId={id} />
+       <TaskDetails taskId={task._id} task={task} />
         <Comments taskId={id} />
       </div>
 

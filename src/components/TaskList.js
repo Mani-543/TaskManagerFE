@@ -7,11 +7,14 @@ function TaskList() {
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/tasks", {
-          headers: {
-            Authorization: localStorage.getItem("token"),
-          },
-        });
+        const res = await axios.get(
+          "https://taskmanagerbe-cx96.onrender.com/api/tasks",
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
 
         setTasks(res.data);
       } catch (err) {
@@ -37,23 +40,18 @@ function TaskList() {
               key={task._id}
               className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition"
             >
-              {/* Title */}
               <h4 className="text-lg md:text-xl font-semibold text-gray-800">
                 {task.title}
               </h4>
 
-              {/* Description */}
               <p className="text-gray-600 mt-1 text-sm md:text-base">
                 {task.description || "No description"}
               </p>
 
-              {/* Info Row */}
               <div className="flex flex-col sm:flex-row sm:justify-between mt-3 text-sm text-gray-500 gap-2">
                 <span>📌 {task.status}</span>
 
-                {task.priority && (
-                  <span>⚡ {task.priority}</span>
-                )}
+                {task.priority && <span>⚡ {task.priority}</span>}
 
                 {task.deadline && (
                   <span>
@@ -62,7 +60,6 @@ function TaskList() {
                 )}
               </div>
 
-              {/* Optional creator */}
               {task.createdBy && (
                 <p className="text-xs text-gray-400 mt-2">
                   👤 {task.createdBy.name}

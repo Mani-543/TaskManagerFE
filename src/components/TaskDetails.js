@@ -1,7 +1,7 @@
 import { useState } from "react";
-import axios from "axios";
+import API from "../services/api";
 
-const TaskDetails = ({ taskId }) => {
+const TaskDetails = ({ taskId, task }) => {
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
 
@@ -14,22 +14,21 @@ const TaskDetails = ({ taskId }) => {
     try {
       setUploading(true);
 
-      await axios.post(
-        `http://localhost:5000/api/tasks/${taskId}/upload`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
+      const res = await API.post(
+        `/tasks/${taskId}/upload`,
+        formData
       );
 
+      console.log(res.data);
       alert("File uploaded successfully ✅");
       setFile(null);
+
+      // quick refresh (so file appears)
+      window.location.reload();
+
     } catch (err) {
-      console.log(err.message);
-      alert("Upload failed ❌");
+      console.log("UPLOAD ERROR:", err.response?.data || err.message);
+      alert(err.response?.data?.message || "Upload Failed.. ❌");
     } finally {
       setUploading(false);
     }
@@ -37,37 +36,44 @@ const TaskDetails = ({ taskId }) => {
 
   return (
     <div className="border rounded-lg p-4 mt-4 bg-white shadow-sm">
+      <h3 className="font-bold mb-3 text-lg">📎 Upload File for Task</h3>
 
-      {/* TITLE */}
-      <h3 className="font-bold mb-3 text-lg">
-        📎 Upload File for Task
-      </h3>
-
-      {/* FILE INPUT + BUTTON */}
       <div className="flex flex-col sm:flex-row gap-3 items-center">
-
-        {/* INPUT */}
         <input
           type="file"
           onChange={(e) => setFile(e.target.files[0])}
           className="w-full sm:w-auto border rounded px-3 py-2 text-sm"
         />
 
-        {/* BUTTON */}
         <button
           onClick={handleUpload}
           disabled={uploading}
-          className="w-full sm:w-auto bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition"
+          className="w-full sm:w-auto bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
         >
           {uploading ? "Uploading..." : "Upload"}
         </button>
       </div>
 
-      {/* FILE NAME PREVIEW */}
       {file && (
-        <p className="text-sm text-gray-600 mt-2 truncate">
+        <p className="text-sm text-gray-600 mt-2">
           Selected: {file.name}
         </p>
+      )}
+
+      {/* ✅ SHOW FILE */}
+      {task?.file && (
+        <div className="mt-4">
+          <p className="text-sm font-semibold">📂 Uploaded File:</p>
+
+          <a
+            href={task.file}
+            target="_blank"
+            rel="noreferrer"
+            className="text-blue-500 underline"
+          >
+            View File
+          </a>
+        </div>
       )}
     </div>
   );

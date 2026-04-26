@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import axios from "axios";
+import API from "../services/api"; // ✅ FIX
 
 function Profile() {
   const [user, setUser] = useState(null);
@@ -10,17 +10,10 @@ function Profile() {
     email: "",
   });
 
-  const token = localStorage.getItem("token");
-
   // ================= FETCH PROFILE =================
   const fetchProfile = useCallback(async () => {
     try {
-      const res = await axios.get(
-        "http://localhost:5000/api/tasks/profile",
-        {
-          headers: { Authorization: token },
-        }
-      );
+      const res = await API.get("/tasks/profile"); // ✅ FIX
 
       setUser(res.data);
       setForm({
@@ -30,7 +23,7 @@ function Profile() {
     } catch (err) {
       console.log(err.message);
     }
-  }, [token]);
+  }, []);
 
   useEffect(() => {
     fetchProfile();
@@ -44,13 +37,7 @@ function Profile() {
   // ================= SAVE PROFILE =================
   const saveProfile = async () => {
     try {
-      const res = await axios.put(
-        "http://localhost:5000/api/tasks/profile",
-        form,
-        {
-          headers: { Authorization: token },
-        }
-      );
+      const res = await API.put("/tasks/profile", form); // ✅ FIX
 
       setUser(res.data);
       setEditMode(false);
@@ -73,12 +60,10 @@ function Profile() {
       
       <div className="w-full max-w-lg bg-yellow-100 rounded-xl shadow-lg p-5 md:p-8 transition hover:shadow-xl">
 
-        {/* TITLE */}
         <h2 className="text-xl md:text-2xl font-bold text-center mb-6 flex items-center justify-center gap-2">
           👤 Profile
         </h2>
 
-        {/* EDIT MODE */}
         {editMode ? (
           <div className="space-y-4">
 
@@ -102,7 +87,6 @@ function Profile() {
               />
             </div>
 
-            {/* BUTTONS */}
             <div className="flex flex-col sm:flex-row gap-3 mt-4">
               <button
                 onClick={saveProfile}
@@ -122,13 +106,11 @@ function Profile() {
         ) : (
           <div className="space-y-4">
 
-            {/* USER INFO */}
             <div className="bg-white p-4 rounded-lg shadow text-sm md:text-base">
               <p><b>Name:</b> {user.name}</p>
               <p><b>Email:</b> {user.email}</p>
             </div>
 
-            {/* EDIT BUTTON */}
             <button
               onClick={() => setEditMode(true)}
               className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-md"

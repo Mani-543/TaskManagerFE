@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import axios from "axios";
+import API from "../services/api";
 import Layout from "./Layout";
 import TaskForm from "./TaskForm";
 import { useNavigate } from "react-router-dom";
@@ -16,7 +16,7 @@ function Dashboard() {
   // ================= FETCH TASKS =================
   const fetchTasks = useCallback(async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/tasks", {
+      const res = await API.get("/tasks", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -59,15 +59,12 @@ function Dashboard() {
     <Layout>
       <div className="max-w-5xl mx-auto rounded-lg p-3 sm:p-4 md:p-6 lg:p-8 bg-gradient-to-r from-purple-300 via-pink-500 to-yellow-300 font-sans mt-3 md:mt-6">
 
-        {/* TITLE */}
         <h1 className="text-xl sm:text-2xl font-bold mb-4 text-center sm:text-left">
           📋 Task Dashboard
         </h1>
 
-        {/* ADD TASK */}
         <TaskForm onTaskAdded={refreshTasks} />
 
-        {/* TABS */}
         <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 mt-6 mb-4 border-b pb-2">
 
           <button
@@ -104,7 +101,6 @@ function Dashboard() {
           </button>
         </div>
 
-        {/* TASK LIST */}
         <div className="grid gap-4">
           {filteredTasks.length === 0 ? (
             <p className="text-center text-gray-700">No tasks found</p>
@@ -135,7 +131,6 @@ function Dashboard() {
                   <p>📌 {task.status}</p>
                 </div>
 
-                {/* EXTRA INFO */}
                 <div className="mt-2 text-xs sm:text-sm text-gray-500">
                   <p>👤 Created by: {task.createdBy?.name}</p>
 

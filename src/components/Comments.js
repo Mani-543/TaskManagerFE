@@ -9,18 +9,20 @@ function Comments({ taskId }) {
   const token = localStorage.getItem("token");
   const userId = localStorage.getItem("userId");
 
+  const BASE_URL = "https://taskmanagerbe-cx96.onrender.com/api";
+
   // ================= FETCH =================
   const fetchComments = useCallback(async () => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/tasks/${taskId}/comments`,
+        `${BASE_URL}/tasks/${taskId}/comments`,
         {
-          headers: { Authorization: token },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
       setComments(res.data);
     } catch (err) {
-      console.log(err.message);
+      console.log(err.response?.data || err.message);
     }
   }, [taskId, token]);
 
@@ -42,24 +44,23 @@ function Comments({ taskId }) {
 
     try {
       await axios.post(
-        `http://localhost:5000/api/tasks/${taskId}/comments`,
+        `${BASE_URL}/tasks/${taskId}/comments`,
         { text },
         {
-          headers: { Authorization: token },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
 
       setText("");
       fetchComments();
     } catch (err) {
-      console.log(err.message);
+      console.log(err.response?.data || err.message);
     }
   };
 
   return (
     <div className="flex flex-col h-[350px] sm:h-[400px] md:h-[450px] border rounded-lg overflow-hidden">
 
-      {/* CHAT AREA */}
       <div
         ref={chatRef}
         className="flex-1 overflow-y-auto p-2 sm:p-3 bg-gray-100"
@@ -98,7 +99,6 @@ function Comments({ taskId }) {
         })}
       </div>
 
-      {/* INPUT AREA */}
       <div className="flex flex-col sm:flex-row border-t p-2 bg-white gap-2">
         <input
           className="flex-1 border rounded-full px-4 py-2 outline-none text-sm"

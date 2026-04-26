@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import API from "../services/api";
 
 function TaskForm({ onTaskAdded }) {
   const [users, setUsers] = useState([]);
@@ -21,14 +21,12 @@ function TaskForm({ onTaskAdded }) {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await axios.get(
-          "http://localhost:5000/api/users",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const res = await API.get("/users", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
         setUsers(res.data);
       } catch (err) {
         console.log("Fetch Users Error:", err.message);
@@ -47,15 +45,11 @@ function TaskForm({ onTaskAdded }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(
-        "http://localhost:5000/api/tasks",
-        task,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await API.post("/tasks", task, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       alert("Task Assigned ✅");
 
@@ -74,11 +68,12 @@ function TaskForm({ onTaskAdded }) {
         reminder: ""
       });
     } catch (error) {
+      console.log(error.response?.data || error.message);
       alert("Task creation failed ❌");
     }
   };
 
-  // ---------------- UI ----------------
+  // ---------------- UI (UNCHANGED) ----------------
   return (
     <div className="w-full flex justify-center mt-4 px-2 md:px-0">
       <div className="w-full max-w-2xl bg-yellow-50 rounded-xl shadow-lg p-4 sm:p-6 md:p-8 space-y-5">
@@ -89,7 +84,6 @@ function TaskForm({ onTaskAdded }) {
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
 
-          {/* Title */}
           <input
             name="title"
             value={task.title}
@@ -99,7 +93,6 @@ function TaskForm({ onTaskAdded }) {
             className="border rounded-lg p-2 sm:p-3"
           />
 
-          {/* Description */}
           <textarea
             name="description"
             value={task.description}
@@ -109,7 +102,6 @@ function TaskForm({ onTaskAdded }) {
             className="border rounded-lg p-2 sm:p-3"
           />
 
-          {/* Deadline + Priority */}
           <div className="flex flex-col md:flex-row gap-4">
 
             <div className="flex-1">
@@ -162,7 +154,6 @@ function TaskForm({ onTaskAdded }) {
             </select>
           </div>
 
-          {/* Reminder */}
           <input
             type="datetime-local"
             name="reminder"
@@ -171,7 +162,6 @@ function TaskForm({ onTaskAdded }) {
             className="border rounded-lg p-2 sm:p-3"
           />
 
-          {/* Button */}
           <button
             type="submit"
             className="bg-purple-600 hover:bg-purple-700 text-white py-2 sm:py-3 rounded-lg font-semibold transition"

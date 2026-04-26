@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import axios from "axios";
+import API from "../services/api";
 import {
   PieChart,
   Pie,
@@ -14,24 +14,23 @@ import {
 } from "recharts";
 import Layout from "../components/Layout";
 
-
 function ProgressPage() {
   const [tasks, setTasks] = useState([]);
 
   // ================= FETCH TASKS =================
   const fetchTasks = useCallback(async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/tasks", {
+      const res = await API.get("/tasks", {
         headers: {
           Authorization: localStorage.getItem("token"),
         },
       });
+
       setTasks(res.data);
     } catch (err) {
       console.log(err.message);
     }
   }, []);
-
 
   useEffect(() => {
     fetchTasks();
@@ -58,12 +57,11 @@ function ProgressPage() {
     <Layout>
       <div className="p-4 md:p-6 max-w-6xl mx-auto">
 
-        {/* TITLE */}
         <h1 className="text-xl md:text-2xl font-bold mb-6">
           📊 Progress & Reports
         </h1>
 
-        {/* ================= PROGRESS BAR ================= */}
+        {/* PROGRESS BAR */}
         <div className="mb-8 bg-white p-4 rounded-lg shadow">
           <div className="w-full bg-gray-200 rounded-full h-4">
             <div
@@ -77,7 +75,7 @@ function ProgressPage() {
           </p>
         </div>
 
-        {/* ================= CHARTS ================= */}
+        {/* CHARTS */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
           {/* PIE CHART */}
