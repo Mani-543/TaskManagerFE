@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import API from "../services/api"; // ✅ FIX
 import { useParams, useNavigate } from "react-router-dom";
-import TaskDetails from "../components/TaskDetails";
 import Comments from "../components/Comments";
 
 function TaskPage() {
@@ -219,8 +218,7 @@ const handleChange = (e) => {
       </div>
 
       <div className="space-y-6">
-       <TaskDetails taskId={task._id} task={task} />
-        <Comments taskId={id} />
+               <Comments taskId={id} />
       </div>
 
       {/* SHARE */}
