@@ -4,7 +4,7 @@ const API = axios.create({
   baseURL: "https://taskmanagerbe-cx96.onrender.com/api",
 });
 
-// ✅ Attach token automatically
+// attach token
 API.interceptors.request.use((req) => {
   const token = localStorage.getItem("token");
   if (token) {
