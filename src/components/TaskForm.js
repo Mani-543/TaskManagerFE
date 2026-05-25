@@ -3,6 +3,7 @@ import API from "../services/api";
 
 function TaskForm({ onTaskAdded }) {
   const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const [task, setTask] = useState({
     title: "",
@@ -12,7 +13,7 @@ function TaskForm({ onTaskAdded }) {
     status: "Pending",
     category: "Work",
     assignedTo: "",
-    reminder: ""
+    reminder: "",
   });
 
   const token = localStorage.getItem("token");
@@ -38,25 +39,33 @@ function TaskForm({ onTaskAdded }) {
 
   // ---------------- HANDLE CHANGE ----------------
   const handleChange = (e) => {
-    setTask({ ...task, [e.target.name]: e.target.value });
+    setTask({
+      ...task,
+      [e.target.name]: e.target.value,
+    });
   };
 
   // ---------------- SUBMIT ----------------
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (loading) return;
+
     try {
-      await API.post("/tasks", task, {
+      setLoading(true);
+
+      const res = await API.post("/tasks", task, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      alert("Task Assigned ✅");
-
+      // instantly update UI
       if (onTaskAdded) {
-        onTaskAdded();
+        onTaskAdded(res.data);
       }
 
+      // reset form
       setTask({
         title: "",
         description: "",
@@ -65,20 +74,20 @@ function TaskForm({ onTaskAdded }) {
         status: "Pending",
         category: "Work",
         assignedTo: "",
-        reminder: ""
+        reminder: "",
       });
     } catch (error) {
       console.log(error.response?.data || error.message);
-      alert("Task creation failed ❌");
+    } finally {
+      setLoading(false);
     }
   };
 
-  // ---------------- UI (UNCHANGED) ----------------
   return (
     <div className="w-full flex justify-center mt-4 px-2 md:px-0">
-      <div className="w-full max-w-2xl bg-yellow-50 rounded-xl shadow-lg p-4 sm:p-6 md:p-8 space-y-5">
+      <div className="w-full max-w-2xl bg-blue-100 rounded-xl shadow-lg p-4 sm:p-6 md:p-8 space-y-5">
 
-        <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-center text-gray-800">
+        <h2 className="text-xl sm:text-2xl md:text-3xl  font-bold text-center text-gray-800">
           Create New Task
         </h2>
 
@@ -105,7 +114,10 @@ function TaskForm({ onTaskAdded }) {
           <div className="flex flex-col md:flex-row gap-4">
 
             <div className="flex-1">
-              <label className="block mb-1 text-sm font-medium">Deadline</label>
+              <label className="block mb-1 text-sm font-medium">
+                Deadline
+              </label>
+
               <input
                 type="date"
                 name="deadline"
@@ -116,7 +128,10 @@ function TaskForm({ onTaskAdded }) {
             </div>
 
             <div className="flex-1">
-              <label className="block mb-1 text-sm font-medium">Priority</label>
+              <label className="block mb-1 text-sm font-medium">
+                Priority
+              </label>
+
               <select
                 name="priority"
                 value={task.priority}
@@ -133,7 +148,10 @@ function TaskForm({ onTaskAdded }) {
 
           {/* Assign User */}
           <div>
-            <label className="block mb-1 text-sm font-medium">Assign User</label>
+            <label className="block mb-1 text-sm font-medium">
+              Assign User
+            </label>
+
             <select
               name="assignedTo"
               value={task.assignedTo}
@@ -142,6 +160,7 @@ function TaskForm({ onTaskAdded }) {
               className="w-full border rounded-lg p-2 sm:p-3"
             >
               <option value="">Select User</option>
+
               {users.length > 0 ? (
                 users.map((user) => (
                   <option key={user._id} value={user._id}>
@@ -164,9 +183,13 @@ function TaskForm({ onTaskAdded }) {
 
           <button
             type="submit"
-            className="bg-purple-600 hover:bg-purple-700 text-white py-2 sm:py-3 rounded-lg font-semibold transition"
+            disabled={loading}
+            className={`text-white py-2 sm:py-3 rounded-lg font-semibold transition ${loading
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-purple-600 hover:bg-purple-700"
+              }`}
           >
-            Create Task
+            {loading ? "Creating..." : "Create Task"}
           </button>
 
         </form>

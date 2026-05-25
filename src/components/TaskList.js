@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 function TaskList() {
   const [tasks, setTasks] = useState([]);
@@ -26,13 +27,21 @@ function TaskList() {
   }, []);
 
   return (
-    <div className="w-full max-w-4xl mx-auto mt-6 px-2 md:px-0">
+    <div className="w-full max-w-4xl  bg-yellow-200 mx-auto mt-6 px-2 md:px-0">
       <h3 className="text-xl md:text-2xl font-bold mb-4 text-gray-800">
         📋 Task List
       </h3>
 
       {tasks.length === 0 ? (
-        <p className="text-gray-600">No tasks found</p>
+        <div className="text-center py-12">
+          <p className="text-gray-600 mb-4">No tasks found</p>
+          <Link
+            to="/create"
+            className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg transition"
+          >
+            ➕ Create Your First Task
+          </Link>
+        </div>
       ) : (
         <div className="space-y-4">
           {tasks.map((task) => (

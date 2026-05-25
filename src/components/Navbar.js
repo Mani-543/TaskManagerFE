@@ -15,10 +15,10 @@ function Navbar() {
 
   return (
     <nav className="bg-gray-900 text-white px-4 md:px-7 py-4 shadow-md">
-      
+
       {/* TOP BAR */}
       <div className="flex justify-between items-center">
-        
+
         {/* Logo */}
         <div className="text-xl md:text-3xl font-bold">
           📝 Task Manager
@@ -36,24 +36,24 @@ function Navbar() {
         <div className="hidden md:flex items-center gap-6">
           {token ? (
             <>
-              <Link to="/dashboard" className="bg-blue-500 px-3 py-1 rounded">
+              <Link to="/dashboard" className="bg-blue-500 hover:bg-blue-600 px-3 py-1 rounded transition">
                 Dashboard
+              </Link>
+
+              <Link to="/profile" className="bg-yellow-500 hover:bg-yellow-600 px-3 py-1 rounded transition">
+                👤 Profile
               </Link>
 
               <button
                 onClick={() => navigate("/progress")}
-                className="bg-purple-500 px-3 py-1 rounded"
+                className="bg-purple-500 hover:bg-purple-600 px-3 py-1 rounded transition"
               >
                 📊 Progress
               </button>
 
-              <Link to="/profile" className="bg-yellow-500 px-3 py-1 rounded">
-                Profile
-              </Link>
-
               <button
                 onClick={handleLogout}
-                className="bg-red-500 px-3 py-1 rounded hover:bg-red-600"
+                className="bg-red-500 px-3 py-1 rounded hover:bg-red-600 transition"
               >
                 Logout
               </button>
@@ -74,10 +74,18 @@ function Navbar() {
             <>
               <Link
                 to="/dashboard"
-                className="bg-blue-500 px-3 py-2 rounded"
+                className="bg-blue-500 hover:bg-blue-600 px-3 py-2 rounded transition"
                 onClick={() => setMenuOpen(false)}
               >
                 Dashboard
+              </Link>
+
+              <Link
+                to="/profile"
+                className="bg-yellow-500 hover:bg-yellow-600 px-3 py-2 rounded transition"
+                onClick={() => setMenuOpen(false)}
+              >
+                👤 Profile
               </Link>
 
               <button
@@ -85,22 +93,14 @@ function Navbar() {
                   navigate("/progress");
                   setMenuOpen(false);
                 }}
-                className="bg-purple-500 px-3 py-2 rounded text-left"
+                className="bg-purple-500 hover:bg-purple-600 px-3 py-2 rounded text-left transition"
               >
                 📊 Progress
               </button>
 
-              <Link
-                to="/profile"
-                className="bg-yellow-500 px-3 py-2 rounded"
-                onClick={() => setMenuOpen(false)}
-              >
-                Profile
-              </Link>
-
               <button
                 onClick={handleLogout}
-                className="bg-red-500 px-3 py-2 rounded text-left"
+                className="bg-red-500 px-3 py-2 rounded text-left hover:bg-red-600 transition"
               >
                 Logout
               </button>

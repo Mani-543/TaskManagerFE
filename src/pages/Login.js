@@ -8,6 +8,14 @@ function Login() {
   const [error, setError] = React.useState(null);
   const navigate = useNavigate();
 
+  const handleDemoLogin = () => {
+    // Set demo user data
+    localStorage.setItem("token", "demo-token-12345");
+    localStorage.setItem("userId", "demo-user-id");
+    localStorage.setItem("name", "Demo User");
+    navigate("/dashboard");
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -98,13 +106,20 @@ function Login() {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full py-3 rounded-lg text-white font-semibold transition ${
-              loading
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-blue-600 hover:bg-blue-700"
-            }`}
+            className={`w-full py-3 rounded-lg text-white font-semibold transition ${loading
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-blue-600 hover:bg-blue-700"
+              }`}
           >
             {loading ? "Logging in..." : "Login"}
+          </button>
+
+          <button
+            type="button"
+            onClick={handleDemoLogin}
+            className="w-full py-3 rounded-lg text-white font-semibold bg-green-600 hover:bg-green-700 transition"
+          >
+            🎯 Try Demo
           </button>
         </form>
 

@@ -57,8 +57,7 @@ function Dashboard() {
 
   return (
     <Layout>
-      <div className="max-w-5xl mx-auto rounded-lg p-3 sm:p-4 md:p-6 lg:p-8 bg-gradient-to-r from-purple-300 via-pink-500 to-yellow-300 font-sans mt-3 md:mt-6">
-
+      <div className="max-w-5xl mx-auto rounded-lg p-3 sm:p-4 md:p-6 lg:p-8 bg-gradient-to-r from-yellow-500 via-purple-500 to-pink-900 font-sans mt-3 md:mt-6">
         <h1 className="text-xl sm:text-2xl font-bold mb-4 text-center sm:text-left">
           📋 Task Dashboard
         </h1>
@@ -69,33 +68,30 @@ function Dashboard() {
 
           <button
             onClick={() => setActiveTab("my")}
-            className={`w-full sm:w-auto px-4 py-2 rounded text-sm sm:text-base ${
-              activeTab === "my"
-                ? "bg-blue-500 text-white"
-                : "bg-gray-200"
-            }`}
+            className={`w-full sm:w-auto px-4 py-2 rounded text-sm sm:text-base ${activeTab === "my"
+              ? "bg-blue-500 text-white"
+              : "bg-gray-200"
+              }`}
           >
             My Tasks
           </button>
 
           <button
             onClick={() => setActiveTab("assigned")}
-            className={`w-full sm:w-auto px-4 py-2 rounded text-sm sm:text-base ${
-              activeTab === "assigned"
-                ? "bg-green-500 text-white"
-                : "bg-gray-200"
-            }`}
+            className={`w-full sm:w-auto px-4 py-2 rounded text-sm sm:text-base ${activeTab === "assigned"
+              ? "bg-red-500 text-white"
+              : "bg-gray-200"
+              }`}
           >
             Assigned To Me
           </button>
 
           <button
             onClick={() => setActiveTab("shared")}
-            className={`w-full sm:w-auto px-4 py-2 rounded text-sm sm:text-base ${
-              activeTab === "shared"
-                ? "bg-purple-500 text-white"
-                : "bg-gray-200"
-            }`}
+            className={`w-full sm:w-auto px-4 py-2 rounded text-sm sm:text-base ${activeTab === "shared"
+              ? "bg-green-500 text-white"
+              : "bg-gray-200"
+              }`}
           >
             Shared With Me
           </button>
