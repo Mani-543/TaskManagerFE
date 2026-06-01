@@ -8,13 +8,27 @@ function Login() {
   const [error, setError] = React.useState(null);
   const navigate = useNavigate();
 
-  const handleDemoLogin = () => {
-    // Set demo user data
-    localStorage.setItem("token", "demo-token-12345");
-    localStorage.setItem("userId", "demo-user-id");
-    localStorage.setItem("name", "Demo User");
+ const handleDemoLogin = async () => {
+  try {
+    setLoading(true);
+
+    const res = await API.post("/auth/login", {
+      email: "demo@gmail.com",
+      password: "Demo@123",
+    });
+
+    localStorage.setItem("token", res.data.token);
+    localStorage.setItem("userId", res.data.user._id);
+    localStorage.setItem("name", res.data.user.name);
+
     navigate("/dashboard");
-  };
+  } catch (err) {
+    console.log(err);
+    alert("Demo login failed");
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleLogin = async (e) => {
     e.preventDefault();

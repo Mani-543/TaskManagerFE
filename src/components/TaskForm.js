@@ -168,7 +168,11 @@ function TaskForm({ onTaskAdded }) {
                   </option>
                 ))
               ) : (
-                <option disabled>No users found</option>
+                <>
+                  <option value="123">Demo User</option>
+                  <option value="456">Jane Smith</option>
+
+                </>
               )}
             </select>
           </div>
