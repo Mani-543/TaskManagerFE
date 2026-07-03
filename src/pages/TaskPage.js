@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import API from "../services/api";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, MessageCircle, AlertCircle, Tag } from "lucide-react";
