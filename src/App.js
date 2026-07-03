@@ -10,6 +10,7 @@ import TaskList from "./components/TaskList";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import TaskPage from "./pages/TaskPage";
+import ChatPage from "./pages/ChatPage";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
         <Route path="/tasks" element={<TaskList />} />
         <Route path="/create" element={<TaskForm />} />
         <Route path="/task/:id" element={<TaskPage />} />
+        <Route path="/task/:taskId/chat" element={<ChatPage />} />
       </Routes>
     </BrowserRouter>
   );
